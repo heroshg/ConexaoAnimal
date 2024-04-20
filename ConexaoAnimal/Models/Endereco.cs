@@ -33,5 +33,6 @@ public class Endereco {
   [StringLength(70, ErrorMessage = "O campo deve conter no máximo 70 caracteres")]
   [MinLength(5, ErrorMessage = "O campo deve conter no mínimo 5 caracteres")]
   public string?  Complemento {  get; set; }
+  public Abrigo? Abrigo { get; set; }
   
 }
