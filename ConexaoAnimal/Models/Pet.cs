@@ -6,6 +6,7 @@ namespace API.Models;
 public class Pet
 {
     [Required]
+    [Key]
     public int PetId { get; set; }
     [Required(ErrorMessage = "Campo Nome deve ser preenchido")]
     [StringLength(100, ErrorMessage = "Nome não deve exceder 100 caracteres")]

@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 public class Abrigo {
+  [Key]
   [Required]
   public int AbrigoId { get; set; }
 

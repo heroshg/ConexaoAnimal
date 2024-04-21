@@ -2,6 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 public class Endereco {
   [Required]
+  [Key]
   public int EnderecoId { get; set; }
 
   [Required(ErrorMessage = "Campo Logradouro deve ser preenchido")]
