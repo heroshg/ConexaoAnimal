@@ -1,3 +1,4 @@
+using API.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,5 +16,6 @@ public class Abrigo {
   public int QtdPets { get; set; }
   public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
   public int EnderecoId { get; set; }
-  public Endereco Endereco { get; set; }
+  public Endereco Endereco { get; set; } = null!;
+  public ICollection<Pet> Pets { get; set; } = new List<Pet>();
 }

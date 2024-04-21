@@ -31,5 +31,5 @@ public class Tutor
 
     public int EnderecoId { get; set; }
 
-    public Endereco Endereco { get; set; }
+    public Endereco Endereco { get; set; } = null!;
 }
