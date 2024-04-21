@@ -19,5 +19,5 @@ public class Abrigo {
 
   [ForeignKey("Endereco")]
   public int EnderecoId { get; set; }
-  public Endereco Endereco { get; set; }
+  public Endereco? Endereco { get; set; }
 }
