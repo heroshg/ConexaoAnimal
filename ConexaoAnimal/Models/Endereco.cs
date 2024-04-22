@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 public class Endereco {
   [Required]
   [Key]
-  public int EnderecoId { get; set; }
+  public string? EnderecoId { get; set; } = Guid.NewGuid().ToString();
 
   [Required(ErrorMessage = "Campo Logradouro deve ser preenchido")]
   [StringLength(30, ErrorMessage = "O campo deve conter no máximo 30 caracteres")]

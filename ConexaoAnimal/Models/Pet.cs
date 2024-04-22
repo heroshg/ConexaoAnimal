@@ -7,7 +7,8 @@ public class Pet
 {
     [Required]
     [Key]
-    public int PetId { get; set; }
+    public string PetId { get; set; } = Guid.NewGuid().ToString();
+
     [Required(ErrorMessage = "Campo Nome deve ser preenchido")]
     [StringLength(100, ErrorMessage = "Nome não deve exceder 100 caracteres")]
     public string? Nome { get; set; }
@@ -22,6 +23,7 @@ public class Pet
     [Required]
     [StringLength(20, ErrorMessage = "Pet deve ter uma descrição simples de até 20 caracteres.")]
     public string? Descricao { get; set; }
+    public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
     public int AbrigoId { get; set; }
     public Abrigo Abrigo { get; set; } = null!;
 
