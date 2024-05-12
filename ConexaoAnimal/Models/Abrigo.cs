@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class Abrigo {
   [Key]
   [Required]
-  public string AbrigoId { get; set; } = Guid.NewGuid().ToString();
+  public int AbrigoId { get; set; } 
 
   [Required(ErrorMessage = "Campo Nome deve ser preenchido")]
   [StringLength(30, ErrorMessage = "O número máxino deve ser 30 caracteres")]
@@ -19,4 +19,5 @@ public class Abrigo {
   public int EnderecoId { get; set; }
   public Endereco Endereco { get; set; } = null!;
   public ICollection<Pet> Pets { get; set; } = new List<Pet>();
+  public ICollection<Adocao>? Adocoes { get; set; }
 }
