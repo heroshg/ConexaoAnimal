@@ -34,6 +34,7 @@ public class Endereco {
   [MinLength(5, ErrorMessage = "O campo deve conter no mínimo 5 caracteres")]
   public string? Complemento { get; set; }
   public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-  public Abrigo? Abrigo { get; set; }
+   public int AbrigoId { get; set; }
+   public Abrigo? Abrigo { get; set; }
 
 }
