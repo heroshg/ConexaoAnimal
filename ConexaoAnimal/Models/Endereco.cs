@@ -29,10 +29,6 @@ public class Endereco {
   [Required(ErrorMessage = "Campo Número deve ser preenchido")]
   [Range(0, 5000, ErrorMessage = "O número deve estar entre 0 e 5000")]
   public int Numero { get; set; }
-
-  [StringLength(70, ErrorMessage = "O campo deve conter no máximo 70 caracteres")]
-  [MinLength(5, ErrorMessage = "O campo deve conter no mínimo 5 caracteres")]
-  public string? Complemento { get; set; }
   public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
    public int AbrigoId { get; set; }
    public Abrigo? Abrigo { get; set; }

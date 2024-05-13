@@ -3,6 +3,7 @@ using System;
 using API.Models.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(AppDataContext))]
-    partial class AppDataContextModelSnapshot : ModelSnapshot
+    [Migration("20240512235815_Nova coluna na tabela de adoção")]
+    partial class Novacolunanatabeladeadoção
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -129,6 +132,10 @@ namespace API.Migrations
                     b.Property<string>("Cidade")
                         .IsRequired()
                         .HasMaxLength(35)
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Complemento")
+                        .HasMaxLength(70)
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("DataCriacao")
