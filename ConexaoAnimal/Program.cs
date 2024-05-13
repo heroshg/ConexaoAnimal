@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
+using API.Models;
 using API.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 
@@ -140,6 +141,74 @@ app.MapPut("/abrigo/alterar/{id}", ([FromRoute] string id, [FromBody] Abrigo abr
     context.SaveChanges();
     return Results.Ok("Abrigo alterado com sucesso!");
 });
+
+#region pet CRUD
+app.MapPost("/pets/cadastrar", (Pet pet, [FromServices] AppDataContext context) =>
+{
+    List<ValidationResult> erros = new List<ValidationResult>();
+    if (!Validator.TryValidateObject(pet, new ValidationContext(pet), erros, true))
+    {
+        return Results.BadRequest(erros);
+    }
+    Pet? petBuscado = context.Pets.FirstOrDefault(p => p.PetId == pet.PetId);
+    if (petBuscado is null)
+    {
+        context.Pets.Add(pet);
+        context.SaveChanges();
+        return Results.Created("Pet cadastrado com sucesso!", pet);
+    }
+    return Results.BadRequest("Já existe um pet cadastrado no sistema com este id.");
+});
+
+app.MapGet("/pets/listar", ([FromServices] AppDataContext context) =>
+{
+    if (context.Pets.Any())
+    {
+        return Results.Ok(context.Pets.ToList());
+
+    }
+    return Results.NotFound("Não há nenhum pet cadastrado!");
+});
+
+
+app.MapPut("/pets/alterar/{id}", ([FromRoute] string id, [FromBody] Pet petAlterado, [FromServices] AppDataContext context) =>
+{
+    Pet? pet = context.Pets.Find(id);
+    if (pet is null)
+    {
+        return Results.NotFound("Endereço não encontrado!");
+    }
+
+    pet.PetId = petAlterado.PetId;
+    pet.Nome = petAlterado.Nome;
+    pet.Idade = petAlterado.Idade;
+    pet.UnidadeTempo = petAlterado.UnidadeTempo;
+    pet.Porte = petAlterado.Porte;
+    pet.Descricao = petAlterado.Descricao;
+    pet.CriadoEm = petAlterado.CriadoEm;
+
+
+    context.Pets.Update(petAlterado);
+    context.SaveChanges();
+    return Results.Ok("Pet alterado com sucesso!");
+});
+
+app.MapDelete("/pets/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
+{
+    Pet? pet = context.Pets.Find(id);
+    if (pet is null)
+    {
+        return Results.NotFound("Não existe nenhum endereço com esse ID");
+    }
+    context.Pets.Remove(pet);
+    context.SaveChanges();
+    return Results.Ok($"Pet excluído com sucesso! {pet}");
+
+});
+
+
+#endregion
+
 
 
 
