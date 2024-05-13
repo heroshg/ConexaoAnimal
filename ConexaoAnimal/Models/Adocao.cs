@@ -13,6 +13,6 @@ public class Adocao
 
     [Required]
     [RegularExpression(@"^\d{3}.\d{3}.\d{3}-\d{2}$", ErrorMessage = "O CPF deve ser colocado formatado com pontos e traço 000.000.000-00")]
-    public string cpfTutor { get; set; }
+    public string? cpfTutor { get; set; }
 
 }
