@@ -3,6 +3,7 @@ using System.Text.Json.Serialization;
 using API.Models;
 using API.Models.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
@@ -208,44 +209,27 @@ app.MapDelete("/pets/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataC
 
 #endregion
 
-app.MapGet("/pets/buscar-por-abrigo/{nome}/{id?}", ([FromRoute] string nome, [FromRoute] int? id, [FromServices] AppDataContext context) =>
+app.MapGet("/pets/buscar-por-abrigo/{nome}", ([FromRoute] string nome, [FromServices] AppDataContext context) =>
 {
-    List<Pet?> pets = context.Pets.ToList();
-
-    if (!string.IsNullOrEmpty(nome))
+    Abrigo? abrigo = context.Abrigos.Include(x => x.Pets)
+    .FirstOrDefault(a => a.Nome.ToUpper() == nome.ToUpper());
+    if (abrigo is null)
     {
-        List<Pet?> listaPets = pets.Where(p => p.Abrigo.Nome.ToUpper().Contains(nome.ToUpper().Trim())).ToList();
-        if (listaPets.Count > 0)
-        {
-            return Results.Ok(listaPets);
-        }
-        return Results.NotFound("Nenhum pet foi encontrado com esse nome");
-
-
+        return Results.NotFound("Nenhum pet encontrado com os critérios de busca fornecidos.");
     }
+    return Results.Ok(abrigo);
 
-    if (id.HasValue)
-    {
-        Pet? pet = pets.FirstOrDefault(p => p.PetId == id);
-        if (pet is null)
-        {
-            return Results.NotFound("O pet solicitado não foi encontrado.");
-        }
-        return Results.Ok(pet);
-    }
-
-    return Results.NotFound("Nenhum pet encontrado com os critérios de busca fornecidos.");
 
 });
 
-app.MapGet("/pets/buscar-por-cidade/{cidade}", ([FromRoute] string cidade, [FromServices] AppDataContext context) =>
+app.MapGet("/abrigos/buscar-por-cidade/{cidade}", ([FromRoute] string cidade, [FromServices] AppDataContext context) =>
 {
-    List<Pet?> listaPets = context.Pets.Where(p => p.Abrigo.Endereco.Cidade.ToUpper() == cidade).ToList();
-    if (listaPets.Count > 0)
+    List<Abrigo> abrigos = context.Abrigos.Where(a => a.Endereco.Cidade.ToUpper() == cidade.ToUpper()).ToList();
+    if (abrigos != null)
     {
-        return Results.Ok(listaPets);
+        return Results.Ok(abrigos);
     }
-    return Results.NotFound("Nenhum pet foi encontrado nessa cidade");
+    return Results.NotFound("Não há nenhum abrigo nessa cidade");
 
 });
 
