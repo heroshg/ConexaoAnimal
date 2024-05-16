@@ -4,10 +4,12 @@ using API.Models;
 using API.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
-builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); var app = builder.Build();
+builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+var app = builder.Build();
 
 
 app.MapPost("/enderecos/cadastrar", ([FromBody] Endereco endereco, [FromServices] AppDataContext context) =>
@@ -22,9 +24,9 @@ app.MapPost("/enderecos/cadastrar", ([FromBody] Endereco endereco, [FromServices
     {
         context.Enderecos.Add(endereco);
         context.SaveChanges();
-        return Results.Created("Endereço cadastrado com sucesso!", endereco);
+        return Results.Created("Endereco cadastrado com sucesso!", endereco);
     }
-    return Results.BadRequest($"Já existe esse endereço cadastrado no sistema, cujo id é: {enderecoBuscado.EnderecoId}");
+    return Results.BadRequest($"Já existe esse endereco cadastrado no sistema, cujo id é: {enderecoBuscado.EnderecoId}");
 
 });
 
@@ -33,35 +35,34 @@ app.MapGet("/enderecos/listar", ([FromServices] AppDataContext context) =>
 {
     if (context.Enderecos.Any())
     {
-        return Results.Ok(context.Enderecos.ToList());
+        return Results.Ok(context.Enderecos.Include(x => x.Abrigo).ToList());
 
     }
-    return Results.NotFound("Não há nenhum endereço cadastrado!");
+    return Results.NotFound("Não há nenhum endereco cadastrado!");
 
 });
 
-app.MapPut("/enderecos/alterar/{id}", ([FromRoute] string id, [FromBody] Endereco enderecoAlterado, [FromServices] AppDataContext context) =>
-{
-    Endereco? endereco = context.Enderecos.Find(id);
-    if (endereco is null)
+    app.MapPut("/enderecos/alterar/{id}", ([FromRoute] int id, [FromBody] Endereco enderecoAlterado, [FromServices] AppDataContext context) =>
     {
-        return Results.NotFound("Endereço não encontrado!");
-    }
+        Endereco? endereco = context.Enderecos.Find(id);
+        if (endereco is null)
+        {
+            return Results.NotFound("Endereco não encontrado!");
+        }
 
-    endereco.EnderecoId = enderecoAlterado.EnderecoId;
-    endereco.DataCriacao = enderecoAlterado.DataCriacao;
-    endereco.Cep = enderecoAlterado.Cep;
-    endereco.Cidade = enderecoAlterado.Cidade;
-    endereco.Logradouro = enderecoAlterado.Logradouro;
-    endereco.Numero = enderecoAlterado.Numero;
-    endereco.Uf = enderecoAlterado.Uf;
-    endereco.AbrigoId = enderecoAlterado.AbrigoId;
-    endereco.Abrigo = enderecoAlterado.Abrigo;
+        endereco.EnderecoId = enderecoAlterado.EnderecoId;
+        endereco.DataCriacao = enderecoAlterado.DataCriacao;
+        endereco.Cep = enderecoAlterado.Cep;
+        endereco.Cidade = enderecoAlterado.Cidade;
+        endereco.Logradouro = enderecoAlterado.Logradouro;
+        endereco.Numero = enderecoAlterado.Numero;
+        endereco.Uf = enderecoAlterado.Uf;
+        endereco.Abrigo = enderecoAlterado.Abrigo;
 
-    context.Enderecos.Update(enderecoAlterado);
-    context.SaveChanges();
-    return Results.Ok("Endereço alterado com sucesso!");
-});
+        context.Enderecos.Update(endereco);
+        context.SaveChanges();
+        return Results.Ok("Endereco alterado com sucesso!");
+    });
 
 
 app.MapDelete("/enderecos/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
@@ -69,11 +70,11 @@ app.MapDelete("/enderecos/excluir/{id}", ([FromRoute] int id, [FromServices] App
     Endereco? endereco = context.Enderecos.Find(id);
     if (endereco is null)
     {
-        return Results.NotFound("Não existe nenhum endereço com esse ID");
+        return Results.NotFound("Não existe nenhum endereco com esse ID");
     }
     context.Enderecos.Remove(endereco);
     context.SaveChanges();
-    return Results.Ok($"Endereço excluído com sucesso! {endereco}");
+    return Results.Ok($"Endereco excluído com sucesso! {endereco}");
 
 });
 
@@ -82,7 +83,7 @@ app.MapGet("/abrigos/listar", ([FromServices] AppDataContext context) =>
 {
     if (context.Abrigos.Any())
     {
-        return Results.Ok(context.Abrigos.ToList());
+        return Results.Ok(context.Abrigos.Include(x => x.Endereco).ToList());
 
     }
     return Results.NotFound("Não há nenhum abrigo cadastrado!");
@@ -102,7 +103,7 @@ app.MapPost("/abrigos/cadastrar", ([FromBody] Abrigo abrigo, [FromServices] AppD
     {
         context.Abrigos.Add(abrigo);
         context.SaveChanges();
-        return Results.Created("Endereço cadastrado com sucesso!", abrigo);
+        return Results.Ok("Abrigo cadastrado com sucesso!");
     }
     return Results.BadRequest($"Já existe um abrigo cadastrado no sistema com este nome, cujo id é: {abrigoBuscado.AbrigoId}");
 
@@ -177,7 +178,7 @@ app.MapPut("/pets/alterar/{id}", ([FromRoute] string id, [FromBody] Pet petAlter
     Pet? pet = context.Pets.Find(id);
     if (pet is null)
     {
-        return Results.NotFound("Endereço não encontrado!");
+        return Results.NotFound("Pet não encontrado!");
     }
 
     pet.PetId = petAlterado.PetId;
@@ -199,7 +200,7 @@ app.MapDelete("/pets/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataC
     Pet? pet = context.Pets.Find(id);
     if (pet is null)
     {
-        return Results.NotFound("Não existe nenhum endereço com esse ID");
+        return Results.NotFound("Não existe nenhum pet com esse ID");
     }
     context.Pets.Remove(pet);
     context.SaveChanges();

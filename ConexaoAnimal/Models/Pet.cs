@@ -25,9 +25,9 @@ public class Pet
     public string? Descricao { get; set; }
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
     public int AbrigoId { get; set; }
-    public Abrigo Abrigo { get; set; } = null!;
-    public int AdocaoId { get; set; }
-    public Adocao? Adocao { get; set; }
+    public Abrigo Abrigo { get; set; } 
+
+    public Adocao Adocao { get; set; } 
 
 
 }

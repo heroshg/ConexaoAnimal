@@ -40,6 +40,9 @@ namespace API.Migrations
 
                     b.HasIndex("AbrigoId");
 
+                    b.HasIndex("PetId")
+                        .IsUnique();
+
                     b.ToTable("Adocoes");
                 });
 
@@ -50,9 +53,6 @@ namespace API.Migrations
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("AbrigoId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AdocaoId")
                         .HasColumnType("INTEGER");
 
                     b.Property<DateTime>("CriadoEm")
@@ -81,9 +81,6 @@ namespace API.Migrations
 
                     b.HasIndex("AbrigoId");
 
-                    b.HasIndex("AdocaoId")
-                        .IsUnique();
-
                     b.ToTable("Pets");
                 });
 
@@ -109,6 +106,9 @@ namespace API.Migrations
 
                     b.HasKey("AbrigoId");
 
+                    b.HasIndex("EnderecoId")
+                        .IsUnique();
+
                     b.ToTable("Abrigos");
                 });
 
@@ -116,9 +116,6 @@ namespace API.Migrations
                 {
                     b.Property<int>("EnderecoId")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("AbrigoId")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Cep")
@@ -149,9 +146,6 @@ namespace API.Migrations
 
                     b.HasKey("EnderecoId");
 
-                    b.HasIndex("AbrigoId")
-                        .IsUnique();
-
                     b.ToTable("Enderecos");
                 });
 
@@ -160,10 +154,18 @@ namespace API.Migrations
                     b.HasOne("Abrigo", "Abrigo")
                         .WithMany("Adocoes")
                         .HasForeignKey("AbrigoId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("API.Models.Pet", "Pet")
+                        .WithOne("Adocao")
+                        .HasForeignKey("API.Models.Adocao", "PetId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Abrigo");
+
+                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("API.Models.Pet", b =>
@@ -174,41 +176,37 @@ namespace API.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("API.Models.Adocao", "Adocao")
-                        .WithOne("Pet")
-                        .HasForeignKey("API.Models.Pet", "AdocaoId")
+                    b.Navigation("Abrigo");
+                });
+
+            modelBuilder.Entity("Abrigo", b =>
+                {
+                    b.HasOne("Endereco", "Endereco")
+                        .WithOne("Abrigo")
+                        .HasForeignKey("Abrigo", "EnderecoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Abrigo");
-
-                    b.Navigation("Adocao");
+                    b.Navigation("Endereco");
                 });
 
-            modelBuilder.Entity("Endereco", b =>
+            modelBuilder.Entity("API.Models.Pet", b =>
                 {
-                    b.HasOne("Abrigo", "Abrigo")
-                        .WithOne("Endereco")
-                        .HasForeignKey("Endereco", "AbrigoId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                    b.Navigation("Adocao")
                         .IsRequired();
-
-                    b.Navigation("Abrigo");
-                });
-
-            modelBuilder.Entity("API.Models.Adocao", b =>
-                {
-                    b.Navigation("Pet");
                 });
 
             modelBuilder.Entity("Abrigo", b =>
                 {
                     b.Navigation("Adocoes");
 
-                    b.Navigation("Endereco")
-                        .IsRequired();
-
                     b.Navigation("Pets");
+                });
+
+            modelBuilder.Entity("Endereco", b =>
+                {
+                    b.Navigation("Abrigo")
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

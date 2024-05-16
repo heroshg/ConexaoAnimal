@@ -30,7 +30,6 @@ public class Endereco {
   [Range(0, 5000, ErrorMessage = "O número deve estar entre 0 e 5000")]
   public int Numero { get; set; }
   public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
-   public int AbrigoId { get; set; }
-   public Abrigo? Abrigo { get; set; }
+   public  Abrigo Abrigo { get; set; }
 
 }

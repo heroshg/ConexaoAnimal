@@ -17,7 +17,9 @@ public class Abrigo {
   public int QtdPets { get; set; }
   public DateTime DataCriacao { get; set; } = DateTime.UtcNow;
   public int EnderecoId { get; set; }
-  public Endereco Endereco { get; set; } = null!;
-  public ICollection<Pet> Pets { get; set; } = new List<Pet>();
-  public ICollection<Adocao>? Adocoes { get; set; }
+  public  Endereco Endereco { get; set; } 
+
+
+  public  List<Pet> Pets { get; set; } 
+  public  List<Adocao> Adocoes { get; set; }
 }
