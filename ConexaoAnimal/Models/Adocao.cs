@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace API.Models;
 
@@ -6,9 +7,11 @@ public class Adocao
 {
     public int Id { get; set; }
     public int AbrigoId { get; set; }
+    [JsonIgnore]
     public Abrigo Abrigo { get; set; }
 
     public int PetId { get; set; }
+    [JsonIgnore]
     public Pet Pet { get; set; }
 
     public DateTime? RealizadaEm { get; set; } = DateTime.UtcNow;

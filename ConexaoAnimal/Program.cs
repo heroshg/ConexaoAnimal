@@ -248,4 +248,72 @@ app.MapGet("/abrigos/buscar-por-cidade/{cidade}", ([FromRoute] string cidade, [F
 
 });
 
+
+
+app.MapPost("/adocoes/cadastrar", (Adocao adocao, [FromServices] AppDataContext context) =>
+{
+    List<ValidationResult> erros = new List<ValidationResult>();
+    if (!Validator.TryValidateObject(adocao, new ValidationContext(adocao), erros, true))
+    {
+        return Results.BadRequest(erros);
+    }
+    Adocao adocaoBuscada = context.Adocoes.FirstOrDefault(a => a.Id == adocao.Id);
+    if (adocaoBuscada is null)
+    {
+        context.Adocoes.Add(adocao);
+        context.SaveChanges();
+        return Results.Ok("Adocao cadastrada com sucesso!");
+    }
+    return Results.BadRequest("Adocao já cadastrada!");
+});
+
+app.MapGet("/adocoes/listar", ([FromServices] AppDataContext context) =>
+{
+    if (context.Adocoes.Any())
+    {
+        return Results.Ok(context.Adocoes.ToList());
+
+    }
+    return Results.NotFound("Não há nenhuma adocao cadastrada!");
+});
+
+
+app.MapPut("/adocoes/alterar/{id}", ([FromRoute] int id, [FromBody] Adocao adocaoAlterada, [FromServices] AppDataContext context) =>
+{
+    if (id != adocaoAlterada.Id)
+    {
+        return Results.Ok("Por favor o id da adocao alterado deve ser o mesmo passado por parâmetro");
+    }
+    Adocao adocao = context.Adocoes.Find(id);
+    if (adocao is null)
+    {
+        return Results.NotFound("Pet não encontrado!");
+    }
+    adocao.Id = adocaoAlterada.Id;
+    adocao.AbrigoId = adocaoAlterada.AbrigoId;
+    adocao.Abrigo = adocaoAlterada.Abrigo;
+    adocao.PetId = adocaoAlterada.PetId;
+    adocao.Pet = adocaoAlterada.Pet;
+    adocao.RealizadaEm = adocaoAlterada.RealizadaEm;
+    adocao.cpfTutor = adocaoAlterada.cpfTutor;
+
+
+    context.Adocoes.Update(adocao);
+    context.SaveChanges();
+    return Results.Ok("Adocao alterado com sucesso!");
+});
+
+app.MapDelete("/adocoes/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
+{
+    Adocao adocao = context.Adocoes.Find(id);
+    if (adocao is null)
+    {
+        return Results.NotFound("Não existe nenhuma adocao com esse ID");
+    }
+    context.Adocoes.Remove(adocao);
+    context.SaveChanges();
+    return Results.Ok("Adocao excluída com sucesso!");
+
+});
+
 app.Run();
