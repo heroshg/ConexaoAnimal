@@ -1,8 +1,16 @@
-﻿namespace API.Models.Enums;
+﻿using System.Text.Json.Serialization;
 
+namespace API.Models.Enums;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
 public enum Porte
 {
-    Pequeno = 'P',
-    Medio = 'M',
-    Grande = 'G'
+    [JsonPropertyName("Pequeno")]
+    P,
+
+    [JsonPropertyName("Medio")]
+    M,
+
+    [JsonPropertyName("Grande")]
+    G
 }

@@ -43,7 +43,7 @@ namespace API.Migrations
                     b.HasIndex("PetId")
                         .IsUnique();
 
-                    b.ToTable("Adocoes");
+                    b.ToTable("Adocoes", (string)null);
                 });
 
             modelBuilder.Entity("API.Models.Pet", b =>
@@ -81,7 +81,7 @@ namespace API.Migrations
 
                     b.HasIndex("AbrigoId");
 
-                    b.ToTable("Pets");
+                    b.ToTable("Pets", (string)null);
                 });
 
             modelBuilder.Entity("Abrigo", b =>
@@ -109,7 +109,7 @@ namespace API.Migrations
                     b.HasIndex("EnderecoId")
                         .IsUnique();
 
-                    b.ToTable("Abrigos");
+                    b.ToTable("Abrigos", (string)null);
                 });
 
             modelBuilder.Entity("Endereco", b =>
@@ -146,7 +146,7 @@ namespace API.Migrations
 
                     b.HasKey("EnderecoId");
 
-                    b.ToTable("Enderecos");
+                    b.ToTable("Enderecos", (string)null);
                 });
 
             modelBuilder.Entity("API.Models.Adocao", b =>

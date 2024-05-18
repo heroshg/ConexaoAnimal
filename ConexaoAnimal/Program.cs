@@ -4,7 +4,6 @@ using API.Models;
 using API.Models.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
@@ -44,6 +43,11 @@ app.MapGet("/enderecos/listar", ([FromServices] AppDataContext context) =>
 
     app.MapPut("/enderecos/alterar/{id}", ([FromRoute] int id, [FromBody] Endereco enderecoAlterado, [FromServices] AppDataContext context) =>
     {
+        if(id != enderecoAlterado.EnderecoId)
+        {
+            return Results.BadRequest("Por favor passe um id conforme o id do objeto objeto.");
+        }
+
         Endereco? endereco = context.Enderecos.Find(id);
         if (endereco is null)
         {
@@ -74,7 +78,7 @@ app.MapDelete("/enderecos/excluir/{id}", ([FromRoute] int id, [FromServices] App
     }
     context.Enderecos.Remove(endereco);
     context.SaveChanges();
-    return Results.Ok($"Endereco excluído com sucesso! {endereco}");
+    return Results.Ok("Endereco excluído com sucesso!");
 
 });
 
@@ -83,7 +87,8 @@ app.MapGet("/abrigos/listar", ([FromServices] AppDataContext context) =>
 {
     if (context.Abrigos.Any())
     {
-        return Results.Ok(context.Abrigos.Include(x => x.Endereco).ToList());
+        return Results.Ok(context.Abrigos.Include(x => x.Endereco)
+            .ToList());
 
     }
     return Results.NotFound("Não há nenhum abrigo cadastrado!");
@@ -122,8 +127,13 @@ app.MapDelete("/abrigos/excluir/{id}", ([FromRoute] int id, [FromServices] AppDa
 
 });
 
-app.MapPut("/abrigos/alterar/{id}", ([FromRoute] string id, [FromBody] Abrigo abrigoAlterado, [FromServices] AppDataContext context) =>
+app.MapPut("/abrigos/alterar/{id}", ([FromRoute] int id, [FromBody] Abrigo abrigoAlterado, [FromServices] AppDataContext context) =>
 {
+    if(id != abrigoAlterado.AbrigoId)
+    {
+        return Results.BadRequest("Por favor passe o id correspondente do abrigo que deseja alterar!");
+    }
+
     Abrigo? abrigo = context.Abrigos.Find(id);
     if (abrigo is null)
     {
@@ -139,7 +149,7 @@ app.MapPut("/abrigos/alterar/{id}", ([FromRoute] string id, [FromBody] Abrigo ab
     abrigo.Pets = abrigoAlterado.Pets;
     abrigo.Adocoes = abrigoAlterado.Adocoes;
 
-    context.Abrigos.Update(abrigoAlterado);
+    context.Abrigos.Update(abrigo);
     context.SaveChanges();
     return Results.Ok("Abrigo alterado com sucesso!");
 });
@@ -173,8 +183,12 @@ app.MapGet("/pets/listar", ([FromServices] AppDataContext context) =>
 });
 
 
-app.MapPut("/pets/alterar/{id}", ([FromRoute] string id, [FromBody] Pet petAlterado, [FromServices] AppDataContext context) =>
-{
+app.MapPut("/pets/alterar/{id}", ([FromRoute] int id, [FromBody] Pet petAlterado, [FromServices] AppDataContext context) =>
+{   
+    if(id != petAlterado.PetId)
+    {
+        return Results.Ok("Por favor o id do pet alterado deve ser o mesmo passado por parâmetro");
+    }
     Pet? pet = context.Pets.Find(id);
     if (pet is null)
     {
@@ -190,7 +204,7 @@ app.MapPut("/pets/alterar/{id}", ([FromRoute] string id, [FromBody] Pet petAlter
     pet.CriadoEm = petAlterado.CriadoEm;
 
 
-    context.Pets.Update(petAlterado);
+    context.Pets.Update(pet);
     context.SaveChanges();
     return Results.Ok("Pet alterado com sucesso!");
 });
@@ -204,7 +218,7 @@ app.MapDelete("/pets/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataC
     }
     context.Pets.Remove(pet);
     context.SaveChanges();
-    return Results.Ok($"Pet excluído com sucesso! {pet}");
+    return Results.Ok("Pet excluído com sucesso!");
 
 });
 
@@ -233,10 +247,5 @@ app.MapGet("/abrigos/buscar-por-cidade/{cidade}", ([FromRoute] string cidade, [F
     return Results.NotFound("Não há nenhum abrigo nessa cidade");
 
 });
-
-
-
-
-
 
 app.Run();

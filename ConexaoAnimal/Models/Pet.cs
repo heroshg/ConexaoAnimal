@@ -16,12 +16,13 @@ public class Pet
     [Range(1, 100, ErrorMessage = "Pet deve ter no mínimo 1 mês ou ano e no máximo 100 anos.")]
     public int Idade { get; set; }
     [Required]
-    [RegularExpression(@"^\d+\s+(meses|anos)$", ErrorMessage = "Por favor, insira um valor válido. Ex: 'meses' ou 'anos'.")]
+    [RegularExpression(@"^(meses|anos)$", ErrorMessage = "Por favor, insira um valor válido. Ex: 'meses' ou 'anos'.")]
     public UnidadeTempo UnidadeTempo { get; set; }
     [Required]
+    [RegularExpression("[P|M|G]", ErrorMessage = "Por favor, insira um valor válido. Ex: P ou M ou G")]
     public Porte Porte { get; set; }
     [Required]
-    [StringLength(20, ErrorMessage = "Pet deve ter uma descrição simples de até 20 caracteres.")]
+    [StringLength(25, ErrorMessage = "Pet deve ter uma descrição simples de até 25 caracteres.")]
     public string? Descricao { get; set; }
     public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
     public int AbrigoId { get; set; }
