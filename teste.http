@@ -1,0 +1,93 @@
+
+
+POST https://localhost:7091/enderecos/cadastrar  
+
+Content-Type: application/json
+{     
+    "Logradouro": "R.Mirador",     
+    "Cidade": "Colombo",     
+    "Uf": "PR",     
+    "Cep": "83410-810",     
+    "Numero": "387" 
+} 
+
+
+###
+GET https://localhost:7091/abrigos/listar  
+
+
+###
+GET https://localhost:7091/abrigos/buscar-por-cidade/curitiba  
+
+
+###
+POST https://localhost:7091/abrigos/cadastrar  
+
+Content-Type: application/json
+{   
+    "Nome": "Abrigo Dog Feliz",      
+    "QtdPets": 10,     
+    "EnderecoId": 5  
+} 
+
+
+###
+DELETE https://localhost:7091/abrigos/excluir/2  
+
+
+###
+POST https://localhost:7091/pets/cadastrar  
+
+Content-Type: application/json
+
+{     
+    "Nome": "Panqueca",     
+    "Idade": "1",     
+    "UnidadeTempo": "anos",    
+    "Porte": "P",     
+    "Descricao": "Preguiçosa e carinhosa",     
+    "AbrigoId": 3  
+ } 
+
+
+###
+GET https://localhost:7091/pets/listar 
+ 
+###
+PUT https://localhost:7091/pets/alterar/4  
+ 
+Content-Type: application/json
+
+ {
+    "petId": 4,     
+    "Nome": "Panqueca",     
+    "Idade": "1",     
+    "UnidadeTempo": "anos",    
+    "Porte": "G",     
+    "Descricao": "Brincalhona e raivosa",     
+    "AbrigoId": 1  
+  } 
+ 
+
+###
+DELETE https://localhost:7091/pets/excluir/4  
+
+###
+GET https://localhost:7091/pets/buscar-por-abrigo/Abrigo amigo animal  
+
+
+
+###
+POST https://localhost:7091/adocoes/cadastrar  
+ 
+Content-Type: application/json
+ 
+{     
+    "AbrigoId": "1",     
+    "PetId": "3",     
+    "cpfTutor": "094.357.839-61"  
+} 
+
+
+###
+GET https://localhost:7091/adocoes/listar
