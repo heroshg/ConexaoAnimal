@@ -96,6 +96,13 @@ app.MapPost("/pets/cadastrar", (Pet pet, [FromServices] AppDataContext context) 
     {
         return Results.BadRequest(erros);
     }
+    Abrigo abrigo = context.Abrigos.FirstOrDefault(x => x.AbrigoId == pet.AbrigoId);
+
+    if (abrigo is null)
+    {
+        return Results.NotFound("Não existe um abrigo com esse ID");
+    } 
+
     Pet? petBuscado = context.Pets.FirstOrDefault(p => p.PetId == pet.PetId);
     if (petBuscado is null)
     {
@@ -181,6 +188,21 @@ app.MapPost("/adocoes/cadastrar", (Adocao adocao, [FromServices] AppDataContext 
     {
         return Results.BadRequest(erros);
     }
+
+    Abrigo? abrigo = context.Abrigos.FirstOrDefault(x => x.AbrigoId == adocao.AbrigoId);
+
+    if (abrigo is null)
+    {
+        return Results.NotFound("Não existe um abrigo com esse ID");
+    }    
+
+    Pet? pet = context.Pets.FirstOrDefault(x => x.PetId == adocao.PetId);
+
+    if (pet is null)
+    {
+        return Results.NotFound("Não existe nenhum pet com esse ID");
+    }
+
     Adocao? adocaoBuscada = context.Adocoes.FirstOrDefault(a => a.Id == adocao.Id);
     if (adocaoBuscada is null)
     {
