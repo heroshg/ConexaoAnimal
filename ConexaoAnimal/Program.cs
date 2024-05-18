@@ -203,6 +203,12 @@ app.MapPost("/adocoes/cadastrar", (Adocao adocao, [FromServices] AppDataContext 
         return Results.NotFound("Não existe nenhum pet com esse ID");
     }
 
+    Adocao? petAdotado = context.Adocoes.FirstOrDefault(x => x.PetId == adocao.PetId);
+
+    if (petAdotado is not null){
+      return Results.BadRequest("Esse Pet já foi adotado!");  
+    }  
+
     Adocao? adocaoBuscada = context.Adocoes.FirstOrDefault(a => a.Id == adocao.Id);
     if (adocaoBuscada is null)
     {
