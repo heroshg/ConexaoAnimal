@@ -30,68 +30,27 @@ app.MapPost("/enderecos/cadastrar", ([FromBody] Endereco endereco, [FromServices
 });
 
 
-app.MapGet("/enderecos/listar", ([FromServices] AppDataContext context) =>
-{
-    if (context.Enderecos.Any())
-    {
-        return Results.Ok(context.Enderecos.Include(x => x.Abrigo).ToList());
-
-    }
-    return Results.NotFound("Não há nenhum endereco cadastrado!");
-
-});
-
-    app.MapPut("/enderecos/alterar/{id}", ([FromRoute] int id, [FromBody] Endereco enderecoAlterado, [FromServices] AppDataContext context) =>
-    {
-        if(id != enderecoAlterado.EnderecoId)
-        {
-            return Results.BadRequest("Por favor passe um id conforme o id do objeto objeto.");
-        }
-
-        Endereco? endereco = context.Enderecos.Find(id);
-        if (endereco is null)
-        {
-            return Results.NotFound("Endereco não encontrado!");
-        }
-
-        endereco.EnderecoId = enderecoAlterado.EnderecoId;
-        endereco.DataCriacao = enderecoAlterado.DataCriacao;
-        endereco.Cep = enderecoAlterado.Cep;
-        endereco.Cidade = enderecoAlterado.Cidade;
-        endereco.Logradouro = enderecoAlterado.Logradouro;
-        endereco.Numero = enderecoAlterado.Numero;
-        endereco.Uf = enderecoAlterado.Uf;
-        endereco.Abrigo = enderecoAlterado.Abrigo;
-
-        context.Enderecos.Update(endereco);
-        context.SaveChanges();
-        return Results.Ok("Endereco alterado com sucesso!");
-    });
-
-
-app.MapDelete("/enderecos/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
-{
-    Endereco? endereco = context.Enderecos.Find(id);
-    if (endereco is null)
-    {
-        return Results.NotFound("Não existe nenhum endereco com esse ID");
-    }
-    context.Enderecos.Remove(endereco);
-    context.SaveChanges();
-    return Results.Ok("Endereco excluído com sucesso!");
-
-});
-
-
 app.MapGet("/abrigos/listar", ([FromServices] AppDataContext context) =>
 {
     if (context.Abrigos.Any())
     {
-        return Results.Ok(context.Abrigos.Include(x => x.Endereco)
+        return Results.Ok(context.Abrigos.Include(x => x.Endereco).Include(x => x.Pets).Include(x => x.Adocoes)
             .ToList());
 
     }
     return Results.NotFound("Não há nenhum abrigo cadastrado!");
+
+});
+
+
+app.MapGet("/abrigos/buscar-por-cidade/{cidade}", ([FromRoute] string cidade, [FromServices] AppDataContext context) =>
+{
+    List<Abrigo> abrigos = context.Abrigos.Where(a => a.Endereco.Cidade.ToUpper().Trim() == cidade.ToUpper().Trim()).ToList();
+    if (abrigos != null)
+    {
+        return Results.Ok(abrigos);
+    }
+    return Results.NotFound("Não há nenhum abrigo nessa cidade");
 
 });
 
@@ -114,6 +73,7 @@ app.MapPost("/abrigos/cadastrar", ([FromBody] Abrigo abrigo, [FromServices] AppD
 
 });
 
+
 app.MapDelete("/abrigos/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
 {
     Abrigo? abrigo = context.Abrigos.Find(id);
@@ -127,32 +87,6 @@ app.MapDelete("/abrigos/excluir/{id}", ([FromRoute] int id, [FromServices] AppDa
 
 });
 
-app.MapPut("/abrigos/alterar/{id}", ([FromRoute] int id, [FromBody] Abrigo abrigoAlterado, [FromServices] AppDataContext context) =>
-{
-    if(id != abrigoAlterado.AbrigoId)
-    {
-        return Results.BadRequest("Por favor passe o id correspondente do abrigo que deseja alterar!");
-    }
-
-    Abrigo? abrigo = context.Abrigos.Find(id);
-    if (abrigo is null)
-    {
-        return Results.NotFound("Abrigo não encontrado!");
-    }
-
-    abrigo.AbrigoId = abrigoAlterado.AbrigoId;
-    abrigo.DataCriacao = abrigoAlterado.DataCriacao;
-    abrigo.Nome = abrigoAlterado.Nome;
-    abrigo.QtdPets = abrigoAlterado.QtdPets;
-    abrigo.EnderecoId = abrigoAlterado.EnderecoId;
-    abrigo.Endereco = abrigoAlterado.Endereco;
-    abrigo.Pets = abrigoAlterado.Pets;
-    abrigo.Adocoes = abrigoAlterado.Adocoes;
-
-    context.Abrigos.Update(abrigo);
-    context.SaveChanges();
-    return Results.Ok("Abrigo alterado com sucesso!");
-});
 
 #region pet CRUD
 app.MapPost("/pets/cadastrar", (Pet pet, [FromServices] AppDataContext context) =>
@@ -172,6 +106,7 @@ app.MapPost("/pets/cadastrar", (Pet pet, [FromServices] AppDataContext context) 
     return Results.BadRequest("Já existe um pet cadastrado no sistema com este id.");
 });
 
+
 app.MapGet("/pets/listar", ([FromServices] AppDataContext context) =>
 {
     if (context.Pets.Any())
@@ -184,8 +119,8 @@ app.MapGet("/pets/listar", ([FromServices] AppDataContext context) =>
 
 
 app.MapPut("/pets/alterar/{id}", ([FromRoute] int id, [FromBody] Pet petAlterado, [FromServices] AppDataContext context) =>
-{   
-    if(id != petAlterado.PetId)
+{
+    if (id != petAlterado.PetId)
     {
         return Results.Ok("Por favor o id do pet alterado deve ser o mesmo passado por parâmetro");
     }
@@ -209,6 +144,7 @@ app.MapPut("/pets/alterar/{id}", ([FromRoute] int id, [FromBody] Pet petAlterado
     return Results.Ok("Pet alterado com sucesso!");
 });
 
+
 app.MapDelete("/pets/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
 {
     Pet? pet = context.Pets.Find(id);
@@ -227,7 +163,7 @@ app.MapDelete("/pets/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataC
 app.MapGet("/pets/buscar-por-abrigo/{nome}", ([FromRoute] string nome, [FromServices] AppDataContext context) =>
 {
     Abrigo? abrigo = context.Abrigos.Include(x => x.Pets)
-    .FirstOrDefault(a => a.Nome.ToUpper() == nome.ToUpper());
+    .FirstOrDefault(a => a.Nome.ToUpper().Trim() == nome.ToUpper().Trim());
     if (abrigo is null)
     {
         return Results.NotFound("Nenhum pet encontrado com os critérios de busca fornecidos.");
@@ -237,18 +173,6 @@ app.MapGet("/pets/buscar-por-abrigo/{nome}", ([FromRoute] string nome, [FromServ
 
 });
 
-app.MapGet("/abrigos/buscar-por-cidade/{cidade}", ([FromRoute] string cidade, [FromServices] AppDataContext context) =>
-{
-    List<Abrigo> abrigos = context.Abrigos.Where(a => a.Endereco.Cidade.ToUpper() == cidade.ToUpper()).ToList();
-    if (abrigos != null)
-    {
-        return Results.Ok(abrigos);
-    }
-    return Results.NotFound("Não há nenhum abrigo nessa cidade");
-
-});
-
-
 
 app.MapPost("/adocoes/cadastrar", (Adocao adocao, [FromServices] AppDataContext context) =>
 {
@@ -257,7 +181,7 @@ app.MapPost("/adocoes/cadastrar", (Adocao adocao, [FromServices] AppDataContext 
     {
         return Results.BadRequest(erros);
     }
-    Adocao adocaoBuscada = context.Adocoes.FirstOrDefault(a => a.Id == adocao.Id);
+    Adocao? adocaoBuscada = context.Adocoes.FirstOrDefault(a => a.Id == adocao.Id);
     if (adocaoBuscada is null)
     {
         context.Adocoes.Add(adocao);
@@ -266,6 +190,7 @@ app.MapPost("/adocoes/cadastrar", (Adocao adocao, [FromServices] AppDataContext 
     }
     return Results.BadRequest("Adocao já cadastrada!");
 });
+
 
 app.MapGet("/adocoes/listar", ([FromServices] AppDataContext context) =>
 {
@@ -277,43 +202,5 @@ app.MapGet("/adocoes/listar", ([FromServices] AppDataContext context) =>
     return Results.NotFound("Não há nenhuma adocao cadastrada!");
 });
 
-
-app.MapPut("/adocoes/alterar/{id}", ([FromRoute] int id, [FromBody] Adocao adocaoAlterada, [FromServices] AppDataContext context) =>
-{
-    if (id != adocaoAlterada.Id)
-    {
-        return Results.Ok("Por favor o id da adocao alterado deve ser o mesmo passado por parâmetro");
-    }
-    Adocao adocao = context.Adocoes.Find(id);
-    if (adocao is null)
-    {
-        return Results.NotFound("Pet não encontrado!");
-    }
-    adocao.Id = adocaoAlterada.Id;
-    adocao.AbrigoId = adocaoAlterada.AbrigoId;
-    adocao.Abrigo = adocaoAlterada.Abrigo;
-    adocao.PetId = adocaoAlterada.PetId;
-    adocao.Pet = adocaoAlterada.Pet;
-    adocao.RealizadaEm = adocaoAlterada.RealizadaEm;
-    adocao.cpfTutor = adocaoAlterada.cpfTutor;
-
-
-    context.Adocoes.Update(adocao);
-    context.SaveChanges();
-    return Results.Ok("Adocao alterado com sucesso!");
-});
-
-app.MapDelete("/adocoes/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataContext context) =>
-{
-    Adocao adocao = context.Adocoes.Find(id);
-    if (adocao is null)
-    {
-        return Results.NotFound("Não existe nenhuma adocao com esse ID");
-    }
-    context.Adocoes.Remove(adocao);
-    context.SaveChanges();
-    return Results.Ok("Adocao excluída com sucesso!");
-
-});
 
 app.Run();
