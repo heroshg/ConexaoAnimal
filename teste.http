@@ -4,11 +4,11 @@ POST http://localhost:5187/enderecos/cadastrar
 Content-Type: application/json
 
 {     
-    "Logradouro": "R.Maldivas",     
-    "Cidade": "Belo Horizonte",     
-    "Uf": "MG",     
-    "Cep": "83410-810",     
-    "Numero": "532" 
+    "Logradouro": "R.Filadelfia",     
+    "Cidade": "Colombo",     
+    "Uf": "PR",     
+    "Cep": "83430-830",     
+    "Numero": "334" 
 } 
 
 
@@ -25,14 +25,14 @@ POST http://localhost:5187/abrigos/cadastrar
 Content-Type: application/json
 
 {   
-    "Nome": "Amiguinho super Feliz",      
-    "QtdPets": 50,     
-    "EnderecoId": 6  
+    "Nome": "Adocão",      
+    "QtdPets": 10,     
+    "EnderecoId": 7 
 } 
 
 
 ###
-DELETE http://localhost:5187/abrigos/excluir/7  
+DELETE http://localhost:5187/abrigos/excluir/6  
 
 
 ###
@@ -45,7 +45,7 @@ Content-Type: application/json
     "UnidadeTempo": "anos",    
     "Porte": "P",     
     "Descricao": "Agitado e Brabo",     
-    "AbrigoId": 4  
+    "AbrigoId": 6  
  } 
 
 
@@ -53,11 +53,11 @@ Content-Type: application/json
 GET http://localhost:5187/pets/listar 
  
 ###
-PUT http://localhost:5187/pets/alterar/6  
+PUT http://localhost:5187/pets/alterar/7  
 Content-Type: application/json
 
  {
-    "petId": 6,     
+    "petId": 7,     
     "Nome": "Bobão",     
     "Idade": "1",     
     "UnidadeTempo": "anos",    
@@ -68,7 +68,7 @@ Content-Type: application/json
  
 
 ###
-DELETE http://localhost:5187/pets/excluir/6  
+DELETE http://localhost:5187/pets/excluir/5  
 
 ###
 GET http://localhost:5187/pets/buscar-por-abrigo/Abrigo amigo animal  
@@ -81,7 +81,7 @@ Content-Type: application/json
  
 {     
     "AbrigoId": "1",     
-    "PetId": "6",     
+    "PetId": "7",     
     "cpfTutor": "085.757.489-21"  
 } 
 

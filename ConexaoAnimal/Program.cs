@@ -84,7 +84,7 @@ app.MapDelete("/abrigos/excluir/{id}", ([FromRoute] int id, [FromServices] AppDa
     }
     context.Abrigos.Remove(abrigo);
     context.SaveChanges();
-    return Results.Ok($"Abrigo excluído com sucesso! {abrigo}");
+    return Results.Ok("Abrigo excluído com sucesso!");
 
 });
 
