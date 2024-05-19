@@ -4,11 +4,11 @@ POST http://localhost:5187/enderecos/cadastrar
 Content-Type: application/json
 
 {     
-    "Logradouro": "R.Mirador",     
-    "Cidade": "Colombo",     
-    "Uf": "PR",     
+    "Logradouro": "R.Maldivas",     
+    "Cidade": "Belo Horizonte",     
+    "Uf": "MG",     
     "Cep": "83410-810",     
-    "Numero": "387" 
+    "Numero": "532" 
 } 
 
 
@@ -25,14 +25,14 @@ POST http://localhost:5187/abrigos/cadastrar
 Content-Type: application/json
 
 {   
-    "Nome": "Abrigo Dog Feliz",      
-    "QtdPets": 10,     
-    "EnderecoId": 5  
+    "Nome": "Amiguinho super Feliz",      
+    "QtdPets": 50,     
+    "EnderecoId": 6  
 } 
 
 
 ###
-DELETE http://localhost:5187/abrigos/excluir/2  
+DELETE http://localhost:5187/abrigos/excluir/7  
 
 
 ###
@@ -40,12 +40,12 @@ POST http://localhost:5187/pets/cadastrar
 Content-Type: application/json
 
 {     
-    "Nome": "Panqueca",     
+    "Nome": "Bobão",     
     "Idade": "1",     
     "UnidadeTempo": "anos",    
     "Porte": "P",     
-    "Descricao": "Preguiçosa e carinhosa",     
-    "AbrigoId": 3  
+    "Descricao": "Agitado e Brabo",     
+    "AbrigoId": 4  
  } 
 
 
@@ -53,22 +53,22 @@ Content-Type: application/json
 GET http://localhost:5187/pets/listar 
  
 ###
-PUT http://localhost:5187/pets/alterar/4  
+PUT http://localhost:5187/pets/alterar/6  
 Content-Type: application/json
 
  {
-    "petId": 4,     
-    "Nome": "Panqueca",     
+    "petId": 6,     
+    "Nome": "Bobão",     
     "Idade": "1",     
     "UnidadeTempo": "anos",    
-    "Porte": "G",     
-    "Descricao": "Brincalhona e raivosa",     
+    "Porte": "P",     
+    "Descricao": "Brincalhão e Calmo",     
     "AbrigoId": 1  
   } 
  
 
 ###
-DELETE http://localhost:5187/pets/excluir/4  
+DELETE http://localhost:5187/pets/excluir/6  
 
 ###
 GET http://localhost:5187/pets/buscar-por-abrigo/Abrigo amigo animal  
@@ -81,8 +81,8 @@ Content-Type: application/json
  
 {     
     "AbrigoId": "1",     
-    "PetId": "3",     
-    "cpfTutor": "094.357.839-61"  
+    "PetId": "6",     
+    "cpfTutor": "085.757.489-21"  
 } 
 
 

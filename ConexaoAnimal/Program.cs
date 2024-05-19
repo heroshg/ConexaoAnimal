@@ -45,7 +45,8 @@ app.MapGet("/abrigos/listar", ([FromServices] AppDataContext context) =>
 
 app.MapGet("/abrigos/buscar-por-cidade/{cidade}", ([FromRoute] string cidade, [FromServices] AppDataContext context) =>
 {
-    List<Abrigo> abrigos = context.Abrigos.Where(a => a.Endereco.Cidade.ToUpper().Trim() == cidade.ToUpper().Trim()).ToList();
+    List<Abrigo> abrigos = context.Abrigos.Where(a => a.Endereco.Cidade.ToUpper().Trim() == cidade.ToUpper().Trim())
+    .Include(x => x.Endereco).Include(x => x.Pets).Include(x => x.Adocoes).ToList();
     if (abrigos != null)
     {
         return Results.Ok(abrigos);
@@ -67,7 +68,7 @@ app.MapPost("/abrigos/cadastrar", ([FromBody] Abrigo abrigo, [FromServices] AppD
     {
         context.Abrigos.Add(abrigo);
         context.SaveChanges();
-        return Results.Ok("Abrigo cadastrado com sucesso!");
+        return Results.Created("Abrigo cadastrado com sucesso!", abrigo);
     }
     return Results.BadRequest($"Já existe um abrigo cadastrado no sistema com este nome, cujo id é: {abrigoBuscado.AbrigoId}");
 
