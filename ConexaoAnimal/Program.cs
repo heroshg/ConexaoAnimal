@@ -8,7 +8,18 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDataContext>();
 builder.Services.Configure<Microsoft.AspNetCore.Http.Json.JsonOptions>(options => options.SerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
+builder.Services.AddCors(
+    options =>
+    {
+        options.AddPolicy("AcessoTotal",
+            builder => builder
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin());
+    }
+    );
 var app = builder.Build();
+
 
 
 app.MapPost("/enderecos/cadastrar", ([FromBody] Endereco endereco, [FromServices] AppDataContext context) =>
@@ -231,5 +242,5 @@ app.MapGet("/adocoes/listar", ([FromServices] AppDataContext context) =>
     return Results.NotFound("Não há nenhuma adocao cadastrada!");
 });
 
-
+app.UseCors("AcessoTotal");
 app.Run();
