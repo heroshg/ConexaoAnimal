@@ -54,6 +54,8 @@ app.MapGet("/abrigos/listar", ([FromServices] AppDataContext context) =>
 });
 
 
+
+
 app.MapGet("/abrigos/buscar-por-cidade/{cidade}", ([FromRoute] string cidade, [FromServices] AppDataContext context) =>
 {
     List<Abrigo> abrigos = context.Abrigos.Where(a => a.Endereco.Cidade.ToUpper().Trim() == cidade.ToUpper().Trim())
@@ -130,7 +132,7 @@ app.MapGet("/pets/listar", ([FromServices] AppDataContext context) =>
 {
     if (context.Pets.Any())
     {
-        return Results.Ok(context.Pets.ToList());
+        return Results.Ok(context.Pets.Include(a => a.Abrigo).ToList()) ;
 
     }
     return Results.NotFound("Não há nenhum pet cadastrado!");
