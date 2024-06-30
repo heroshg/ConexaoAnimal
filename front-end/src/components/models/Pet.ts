@@ -3,7 +3,7 @@ import { Adocao } from "./Adocao";
 
 export interface Pet {
     
-    petId?: number,
+    petId?: string,
     nome: string,
     idade: number,
     unidadeTempo: string,

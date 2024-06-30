@@ -6,10 +6,9 @@ import BuscarAbrigoPorCidade from "./abrigo-buscar-por-cidade";
 function AbrigoListar() {
     const [abrigos, setAbrigos] = useState<Abrigo[]>([]);
 
-
     useEffect(() => {
         carregarAbrigos();
-    }, []); 
+    }, []);
 
     function deletarAbrigo(id: any) {
         fetch(`http://localhost:5187/abrigos/excluir/${id}`, {
@@ -17,13 +16,13 @@ function AbrigoListar() {
             headers: {
                 "Content-Type": "application/json"
             }
-        }).then(() => {
+        })
+        .then(() => {
             window.location.reload();
         })
         .catch((err) => {
             console.log("Deu erro" + err);
-        })
-        
+        });
     }
 
     function carregarAbrigos() {
@@ -40,8 +39,8 @@ function AbrigoListar() {
     return (
         <>
             <div className="flex justify-center mb-4 gap-4">
-            <AbrigoCadastrar />
-            <BuscarAbrigoPorCidade />
+                <AbrigoCadastrar />
+                <BuscarAbrigoPorCidade />
             </div>
             <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
@@ -64,15 +63,18 @@ function AbrigoListar() {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{abrigo.dataCriacao ? new Date(abrigo.dataCriacao).toLocaleDateString() : 'Data não disponível'}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{abrigo.endereco?.logradouro}, {abrigo.endereco?.numero}, {abrigo.endereco?.cidade}, {abrigo.endereco?.uf}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <button className="text-red-600 hover:text-red-900" onClick={() => deletarAbrigo(abrigo.abrigoId) }>Deletar </button>
+                                    <button
+                                        className="text-red-600 hover:text-red-900"
+                                        onClick={() => deletarAbrigo(abrigo.abrigoId)}
+                                    >
+                                        Deletar
+                                    </button>
                                 </td>
                             </tr>
                         ))}
                     </tbody>
                 </table>
             </div>
-            
-            
         </>
     );
 }

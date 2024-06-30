@@ -1,41 +1,41 @@
 import AbrigoListar from './components/pages/abrigo/abrigo-listar';
-import EnderecoCadastrar from './components/pages/abrigo/endereco-cadastrar';
+import AdocaoListar from './components/pages/adocao/adocao-listar';
 import ListarPet from './components/pages/pet/pet-listar';
+import Home from './components/pages/home'; 
 import './index.css';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+
 function App() {
-  return (
-    <>
+    return (
+        <>
+            <BrowserRouter>
+                <nav className="bg-blue-800 p-4">
+                    <ul className="flex justify-around">
+                        <li>
+                            <Link to="/" className="text-white hover:text-gray-200">Home</Link>
+                        </li>
+                        <li>
+                            <Link to="/abrigos" className="text-white hover:text-gray-200">Abrigos</Link>
+                        </li>
+                        <li>
+                            <Link to="/adocoes" className="text-white hover:text-gray-200">Adoções</Link>
+                        </li>
+                        <li>
+                            <Link to="/pets" className="text-white hover:text-gray-200">Pets</Link>
+                        </li>
+                    </ul>
+                </nav>
 
+                <Routes>
+                    <Route path='/' element={<Home />} /> 
+                    <Route path='/abrigos' element={<AbrigoListar />} />
+                    <Route path='/pets' element={<ListarPet />} />
+                    <Route path='/adocoes' element={<AdocaoListar />} />
+                </Routes>
 
-    <BrowserRouter>
-    <nav >
-      <ul className='flex justify-around  top-0 p-4'>
-        <li>
-        <Link to="/">Home</Link>
-        </li>
-        <li>
-          <Link to="/abrigos">Abrigos</Link>
-        </li>
-        <li>
-        <Link to="/adocoes">Adocões</Link>
-        </li>
-        <li>
-        <Link to="/pets">Pets</Link>
-        </li>
-      </ul>
-    </nav>
-    <Routes>
-      <Route path='/abrigos' element={ <AbrigoListar />}></Route>
-      <Route path='/pets' element={ <ListarPet /> }></Route>
-    </Routes>
-    
-    <footer className='bottom-0 fixed '>
-      <p >&copy;Desenvolvido por Heros Hlatki Godoy & Marcos Alves de Sá & Samuel Almeida Marques Lima</p>
-    </footer>
-    </BrowserRouter>
-    </>
-  );
+            </BrowserRouter>
+        </>
+    );
 }
 
 export default App;
