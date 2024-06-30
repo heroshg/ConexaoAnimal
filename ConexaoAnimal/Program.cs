@@ -138,6 +138,11 @@ app.MapGet("/pets/listar", ([FromServices] AppDataContext context) =>
     return Results.NotFound("Não há nenhum pet cadastrado!");
 });
 
+app.MapGet("/pets/buscar/{id}", ([FromServices] AppDataContext context, int id) =>
+{
+    return Results.Ok(context.Pets.FirstOrDefault(p => p.PetId == id));
+});
+
 
 app.MapPut("/pets/alterar/{id}", ([FromRoute] int id, [FromBody] Pet petAlterado, [FromServices] AppDataContext context) =>
 {
@@ -156,6 +161,8 @@ app.MapPut("/pets/alterar/{id}", ([FromRoute] int id, [FromBody] Pet petAlterado
     pet.Idade = petAlterado.Idade;
     pet.UnidadeTempo = petAlterado.UnidadeTempo;
     pet.Porte = petAlterado.Porte;
+    pet.Abrigo = petAlterado.Abrigo;
+    pet.AbrigoId = petAlterado.AbrigoId;
     pet.Descricao = petAlterado.Descricao;
     pet.CriadoEm = petAlterado.CriadoEm;
 
@@ -183,14 +190,14 @@ app.MapDelete("/pets/excluir/{id}", ([FromRoute] int id, [FromServices] AppDataC
 
 app.MapGet("/pets/buscar-por-abrigo/{nome}", ([FromRoute] string nome, [FromServices] AppDataContext context) =>
 {
-    Abrigo? abrigo = context.Abrigos.Include(x => x.Pets)
-    .FirstOrDefault(a => a.Nome.ToUpper().Trim() == nome.ToUpper().Trim());
-    if (abrigo is null)
-    {
-        return Results.NotFound("Nenhum pet encontrado com os critérios de busca fornecidos.");
-    }
-    return Results.Ok(abrigo);
 
+    List<Pet> pets = context.Pets.Where(p => p.Abrigo.Nome.ToUpper().Trim() == nome.ToUpper().Trim())
+    .Include(x => x.Abrigo).Include(x => x.Adocao).ToList();
+    if (pets != null)
+    {
+        return Results.Ok(pets);
+    }
+    return Results.NotFound("Não há pet nesse abrigo");
 
 });
 
@@ -238,7 +245,7 @@ app.MapGet("/adocoes/listar", ([FromServices] AppDataContext context) =>
 {
     if (context.Adocoes.Any())
     {
-        return Results.Ok(context.Adocoes.ToList());
+        return Results.Ok(context.Adocoes.Include(x => x.Abrigo).Include(x => x.Pet).ToList());
 
     }
     return Results.NotFound("Não há nenhuma adocao cadastrada!");
