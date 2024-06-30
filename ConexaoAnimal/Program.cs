@@ -138,6 +138,11 @@ app.MapGet("/pets/listar", ([FromServices] AppDataContext context) =>
     return Results.NotFound("Não há nenhum pet cadastrado!");
 });
 
+app.MapGet("/pets/buscar/{id}", ([FromServices] AppDataContext context, int id) =>
+{
+    return Results.Ok(context.Pets.FirstOrDefault(p => p.PetId == id));
+});
+
 
 app.MapPut("/pets/alterar/{id}", ([FromRoute] int id, [FromBody] Pet petAlterado, [FromServices] AppDataContext context) =>
 {
@@ -156,6 +161,8 @@ app.MapPut("/pets/alterar/{id}", ([FromRoute] int id, [FromBody] Pet petAlterado
     pet.Idade = petAlterado.Idade;
     pet.UnidadeTempo = petAlterado.UnidadeTempo;
     pet.Porte = petAlterado.Porte;
+    pet.Abrigo = petAlterado.Abrigo;
+    pet.AbrigoId = petAlterado.AbrigoId;
     pet.Descricao = petAlterado.Descricao;
     pet.CriadoEm = petAlterado.CriadoEm;
 
