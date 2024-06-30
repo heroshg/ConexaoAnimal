@@ -4,6 +4,7 @@ import ListarPet from './components/pages/pet/pet-listar';
 import Home from './components/pages/home'; 
 import './index.css';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import AlterarPet from './components/pages/pet/pet-alterar';
 
 function App() {
     return (
@@ -31,6 +32,8 @@ function App() {
                     <Route path='/abrigos' element={<AbrigoListar />} />
                     <Route path='/pets' element={<ListarPet />} />
                     <Route path='/adocoes' element={<AdocaoListar />} />
+                    <Route path='/pets/alterar/:id'element={<AlterarPet />}>
+                </Route>
                 </Routes>
 
             </BrowserRouter>

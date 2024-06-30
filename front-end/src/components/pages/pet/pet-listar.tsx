@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Pet } from "../../models/Pet";
 import PetCadastrar from "./pet-cadastrar";
+import { Link } from "react-router-dom";
 
 function ListarPet() {
     const [pets, setPets] = useState<Pet[]>([]);
@@ -68,6 +69,7 @@ function ListarPet() {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{pet.abrigo?.nome}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{pet.criadoEm ? new Date(pet.criadoEm).toLocaleDateString() : 'Data não disponível'}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                <Link to={`/pets/alterar/${pet.petId}`} className="text-cyan-600 hover:text-blue-900" >Alterar</Link> <br></br>
                                     <button className="text-red-600 hover:text-red-900" onClick={() => deletarPet(pet.petId) }>Deletar </button>
                                 </td>
                             </tr>
